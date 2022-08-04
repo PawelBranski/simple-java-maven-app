@@ -1,0 +1,11 @@
+node {
+  stage('SCM') {
+    git 'https://github.com/PawelBranski/simple-java-maven-app.git'
+  }
+  stage('SonarQube analysis') {
+    sh "echo 'Zmienna SonarQube'"
+    withSonarQubeEnv('sq1') { // If you have configured more than one global server connection, you can specify its name
+      sh './mvnw clean sonar:sonar'
+    }
+  }
+}
