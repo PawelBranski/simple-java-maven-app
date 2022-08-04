@@ -11,7 +11,7 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package' 
             }
         }
-          stage('SonarQube analysis') {
+        stage('SonarQube analysis') {
             withSonarQubeEnv(installationName: 'sq1') { // You can override the credential to be used
               sh './mvnw clean sonar:sonar'
          }
