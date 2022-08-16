@@ -11,10 +11,9 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package' 
             }
         }
-    }
+    
 
-    agent any
-    stages {
+
         stage('SonarQube analysis') {
         steps {
             script {
