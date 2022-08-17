@@ -27,6 +27,21 @@ pipeline {
                 }
         }
 
+        stage ('Publish to Nexus Repository Manager') {
+            agent any
+            steps{
+                script { 
+                    nexusArtifactUploader artifacts: [[artifactId: 'test-artifactid', classifier: '', file: 'target/my-app-1.0-SNAPSHOT.jar', type: 'jar']], credentialsId: 'Nexus3credentials', groupId: 'groupid', nexusUrl: '192.168.56.101:8081/', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-snapshots', version: '1.0.0-SNAPSHOT' 
+
+                }
+            }
+        }
+
 
     }
     }
+
+
+
+
+    
