@@ -1,0 +1,46 @@
+pipeline {
+    agent none
+    stages {
+        stage('SonarQube analysis') {
+            agent any
+            steps {
+                script {
+                scannerHome = tool 'sq1'
+                sh "pwd"
+                sh "whoami"
+                }
+                withSonarQubeEnv('sq1') {
+                sh "${scannerHome}/bin/sonar-scanner -Dsonar.java.binaries=**/* -Dsonar.projectKey=test -Dsonar.sources=. "
+                }
+            }
+            }
+
+        stage('Build') { 
+                agent {
+        docker {
+            image 'maven:3.8.1-adoptopenjdk-11' 
+            args '-v /root/.m2:/root/.m2' 
+        }
+    }
+                steps {
+                    sh 'mvn -B -DskipTests clean package'
+                }
+        }
+
+        stage ('Publish to Nexus Repository Manager') {
+            steps{
+                script { 
+                    nexusArtifactUploader artifacts: [[artifactId: 'test-artifactid', classifier: '', file: 'target/my-app-1.0-SNAPSHOT.jar', type: 'jar']], credentialsId: 'Nexus3credentials', groupId: 'groupid', nexusUrl: '192.168.56.101:8081/', nexusVersion: 'nexus2', protocol: 'http', repository: 'maven-snapshots', version: '1.0.0-SNAPSHOT' 
+
+                }
+            }
+        }
+
+
+    }
+    }
+
+
+
+
+    
