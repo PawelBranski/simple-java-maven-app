@@ -1,8 +1,8 @@
 pipeline {
     agent any
-    // tools {
-    //     maven "Maven"
-    // }
+    tools {
+        maven "Maven"
+    }
     environment {
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
@@ -24,23 +24,12 @@ pipeline {
                 }
             }
             }
-        // stage("Maven Build") {
-        //     steps {
-        //         script {
-        //             sh "mvn package -DskipTests=true"
-        //         }
-        //     }
-        // }
-        stage('Build') { 
-            agent {
-        docker {
-            image 'maven:3.8.1-adoptopenjdk-11' 
-            args '-v /root/.m2:/root/.m2' 
-        }
-    }
+        stage("Maven Build") {
             steps {
-                sh 'mvn -B -DskipTests clean package' 
+                script {
+                    sh "mvn package -DskipTests=true"
                 }
+            }
         }
         stage("Publish to Nexus Repository Manager") {
             steps {
